@@ -1,4 +1,12 @@
 ecdsa==0.18.0
 pycryptodome==3.18.0
-six==1.16.0
 websockets==11.0.3
+gevent==23.7.0
+greenlet==2.0.2
+pycryptodome==3.18.0
+rel==0.4.9
+six==1.16.0
+websocket==0.2.1
+websocket-client==1.6.1
+zope.event==5.0
+zope.interface==6.0
