@@ -75,13 +75,16 @@ async def soc_con(websocket, path):
                             try:
                                 data = base64.b64decode(message['data'].encode())
                                 data = d_websockets[message['for_session_id']].get_ecdh().decrypt(message['data'])
-                                data = {"from_session_id":message['session_id'],
-                                        "data":data}
+                                data = {"from_session_id":message['session_id'], "data":data}
 
                                 await d_websockets[message['for_session_id']].get_socket().send(json.dumps(data))
                             except Exception as error:
                                 logging.exception(error)
 
+                        if 'session_id' in message and 'to_session_id' in message and 'data' in message:
+                            """
+                            """
+                            await d_websockets[message['to_session_id']].get_socket().send(message['data'])
 
             except Exception as error:
                 logging.exception(error)
