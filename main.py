@@ -38,7 +38,6 @@ async def soc_con(websocket, path):
     try:
         session_id = str(generate_random_uuid())
 
-        # browser client should attach url to this 
         data = {"session_id":session_id}
 
         d_websockets[session_id] = c_socket(session_id, websocket)
@@ -57,20 +56,20 @@ async def soc_con(websocket, path):
 
                         logging.info("+ received: %s", message)
 
-                        if 'session_id' in message and 'for_session_id' in message and 'public_key' in message:
+                        if 'for_session_id' in message and 'public_key' in message:
                             ecdh = sec_ecdh.C_ECDH()
 
                             ecdh.generate_secret(message['public_key'])
-                            d_websockets[message['for_session_id']].set_ecdh(ecdh)
+                            d_websockets[session_id].set_ecdh(ecdh)
 
                             try:
                                 data = {"public_key":ecdh.get_public_key().decode(), 
-                                        "for_session_id":message['for_session_id']}
-                                # await d_websockets[message['']].get_socket().send(json.dumps(data))
+                                        "session_id":session_id}
                                 await websocket.send(json.dumps(data))
                             except Exception as error:
                                 logging.exception(error)
 
+                        """
                         if 'session_id' in message and 'for_session_id' in message and 'data' in message:
                             try:
                                 data = base64.b64decode(message['data'].encode())
@@ -85,6 +84,7 @@ async def soc_con(websocket, path):
                             """
                             """
                             await d_websockets[message['to_session_id']].get_socket().send(message['data'])
+                        """
 
             except Exception as error:
                 logging.exception(error)
