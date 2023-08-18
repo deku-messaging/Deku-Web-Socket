@@ -3,19 +3,12 @@
 #### Browser connection
 1. Connect to server socket
 2. Receive <b>session_body</b> message and display session_id as QR code
-3. Receive <b>from_session_body</b> message as ACK of other peer connected. Maintain the from_session_body as would be used for sending responses back to the other peer.
-4. Begin listening for incoming messages with the <b>from_session_body_data</b> message.
+3. Begin listening for incoming messages with the <b>from_session_body_data</b> message.
 
 <b>Session body</b>
 
 ```json
 {"session_id":"<session_string>"}
-```
-
-<b>from_session_body</b>
-
-```json
-{"from_session_id":"<session_string_of_peer>"}
 ```
 
 <b>from_session_body_data</b>
