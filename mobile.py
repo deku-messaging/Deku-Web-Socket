@@ -13,6 +13,10 @@ logging.basicConfig(level='INFO')
 
 
 """
+--usage--:
+    python3 mobile.py session_id_for_browser_client
+
+
 1. requires connection url to start connection - gotten from qr code
 2. connects to server and gets a session_id, also informs server which
 session it is communicating with for_session_id
@@ -23,6 +27,7 @@ session it is communicating with for_session_id
 """
 
 for_session_id = sys.argv[1]
+session_id = None
 
 ec = sec_ecdh.C_ECDH()
 
@@ -38,16 +43,21 @@ def on_message(ws, message):
     if 'session_id' in message:
         session_id = message['session_id']
 
+        with open("sample.json", "r") as f:
+            sample_data = json.load(f)
+
+        data = {
+                "for_session_id":for_session_id,
+                "data":sample_data
+                }
+        ws.send(json.dumps(data))
+
+    if 'from_session_id' in message and 'data' in message:
+        logging.info("+ New message from browser (%s): %s", 
+                     message['for_session_id'],
+                     message['data'])
+
     logging.info(message)
-
-    with open("sample.json", "r") as f:
-        sample_data = json.load(f)
-
-    data = {
-            "for_session_id":for_session_id,
-            "data":sample_data
-            }
-    ws.send(json.dumps(data))
 
 
 def on_error(ws, error):

@@ -29,19 +29,26 @@ def on_message(ws, message):
     if 'from_session_id' in message:
         logging.info("+ new client message: %s", message)
 
-    """
-    if 'session_id' in message:
-        message['url'] = "https://staging.smswithoutborders.com"
-        logging.info("+ session init: %s", message)
-    """
+        """
+        {
+            "type": "MESSAGES_TYPE_SINGLE",
+            "threadId": "24",
+            "smsList": "[{<sms item>}, ...]",
+            "action": "<Actions>"
+        }
+        """
 
-    """
-    elif 'new_session' in message and 'data' in message:
-        logging.info("+ peer msg: %s", message)
+        response = {"action":"send",
+                    "smsList":[{"body":"hello world", 
+                                "address":"+237123456789" }],
+                    "threadId":"24"
+                    }
 
-    else:
-        logging.info("+ message: %s", message)
-    """
+        data = {
+                "for_session_id":message['from_session_id'],
+                "data":response
+                }
+        ws.send(json.dumps(data))
 
 
 def on_error(ws, error):
