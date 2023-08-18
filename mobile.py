@@ -54,7 +54,7 @@ def on_message(ws, message):
 
     if 'from_session_id' in message and 'data' in message:
         logging.info("+ New message from browser (%s): %s", 
-                     message['for_session_id'],
+                     message['from_session_id'],
                      message['data'])
 
     logging.info(message)
