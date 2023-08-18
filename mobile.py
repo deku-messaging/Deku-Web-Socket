@@ -5,9 +5,10 @@ import time
 import rel
 import json
 import logging
-import ecdh
+import sec_ecdh
 import base64
 import logging
+import sys
 logging.basicConfig(level='INFO')
 
 
@@ -21,21 +22,33 @@ session it is communicating with for_session_id
 6. information is received from the browser in an encrypted way
 """
 
-for_session_id = "12345"
+for_session_id = sys.argv[1]
 
-ec = C_ECDH()
+ec = sec_ecdh.C_ECDH()
 
 def on_message(ws, message):
+    """
+    """
     message = json.loads(message)
-    """
-    """
+
     if 'public_key' in message:
         ec.generate_secret(message['public_key'])
+        logging.info("+ handshake complete!")
 
     if 'session_id' in message:
         session_id = message['session_id']
 
     logging.info(message)
+
+    with open("sample.json", "r") as f:
+        sample_data = json.load(f)
+
+    data = {
+            "for_session_id":for_session_id,
+            "data":sample_data
+            }
+    ws.send(json.dumps(data))
+
 
 def on_error(ws, error):
     print(error)

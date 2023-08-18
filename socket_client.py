@@ -6,45 +6,34 @@ import time
 import rel
 import json
 import logging
-import ecdh
+import sec_ecdh
 import base64
 
 logging.basicConfig(level='INFO')
 
-ec = ecdh.C_ECDH()
+ec = sec_ecdh.C_ECDH()
 
 sample_session_string = "https://staging.smswithoutborders.com:1234567890987654321"
 sample_token_string = "1234567890987654321"
 
-def phone_client_sample(ws, message):
-    """
-    """
-    if not 'public_key' in message or not 'session_id' in message:
-        ec.generate_secret(message['public_key'])
-
-        with open("sample.json", "r") as f:
-            sample_data = json.load(f)
-
-        sample_data = ec.encrypt(json.dumps(sample_data))
-        sample_data = base64.b64encode(sample_data).decode()
-
-        data = {"public_key":ec.get_public_key().decode('utf-8'),
-                "data":sample_data}
-
-        logging.info("%s", data)
-
-        ws.send(json.dumps(data))
-
+session_id = "12345"
 
 def on_message(ws, message):
     # print(message)
     message = json.loads(message)
 
     if 'session_id' in message:
-        """
-        """
+        session_id = message['session_id']
+        logging.info("+ new session id began: %s", session_id)
+
+    if 'from_session_id' in message:
+        logging.info("+ new client message: %s", message)
+
+    """
+    if 'session_id' in message:
         message['url'] = "https://staging.smswithoutborders.com"
         logging.info("+ session init: %s", message)
+    """
 
     """
     elif 'new_session' in message and 'data' in message:
@@ -63,15 +52,6 @@ def on_close(ws, close_status_code, close_msg):
 
 def on_open(ws):
     print("Opened connection")
-
-    """
-    data = {"session_id":base64.b64encode(sample_session_string.encode()).decode(),
-            "session_token":base64.b64encode(sample_token_string.encode()).decode()}
-    logging.info(data)
-
-    ws.send(json.dumps(data))
-    """
-
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
