@@ -70,24 +70,16 @@ async def soc_con(websocket, path):
                                 logging.exception(error)
                         elif 'for_session_id' in message and 'data' in message:
                             if message['for_session_id'] in d_websockets:
-                                await d_websockets[message['for_session_id']].get_socket().send(json.dumps(message['data']))
+                                data = {
+                                        "from_session_id":session_id,
+                                        "data":message['data']
+                                        }
+                                ws =  d_websockets[message['for_session_id']].get_socket()
+                                await ws.send(json.dumps(data))
                             else:
                                 logging.error("- unknown for session required!")
 
-                        """
-                        if 'session_id' in message and 'for_session_id' in message and 'data' in message:
-                            try:
-                                data = base64.b64decode(message['data'].encode())
-                                data = d_websockets[message['for_session_id']].get_ecdh().decrypt(message['data'])
-                                data = {"from_session_id":message['session_id'], "data":data}
 
-                                await d_websockets[message['for_session_id']].get_socket().send(json.dumps(data))
-                            except Exception as error:
-                                logging.exception(error)
-
-                        if 'session_id' in message and 'to_session_id' in message and 'data' in message:
-                            await d_websockets[message['to_session_id']].get_socket().send(message['data'])
-                        """
 
             except Exception as error:
                 logging.exception(error)
