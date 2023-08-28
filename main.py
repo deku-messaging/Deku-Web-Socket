@@ -3,6 +3,7 @@
 import asyncio
 import websockets
 import logging
+import ssl
 
 import json
 import sec_ecdh
@@ -91,13 +92,13 @@ async def soc_con(websocket, path):
 
 import custom_configs
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-ssl_context.load_cert_chain(certfile=custom_configs.configs['ssl_crt'], 
-        keyfile=custom_configs.configs['ssl_key'])
-ssl_context.load_verify_locations(custom_configs.configs['ssl_cabundle'])
+ssl_context.load_cert_chain(certfile=custom_configs.config['ssl_crt'], 
+        keyfile=custom_configs.config['ssl_key'])
+ssl_context.load_verify_locations(custom_configs.config['ssl_cabundle'])
 
 asyncio.get_event_loop().run_until_complete(websockets.serve(
     ws_handler = soc_con, 
     host = "0.0.0.0", 
     port = 16000, 
-    ssl_context=ssl_context))
+    ssl=ssl_context))
 asyncio.get_event_loop().run_forever()
