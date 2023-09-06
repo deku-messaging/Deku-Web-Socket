@@ -61,8 +61,12 @@ def on_open(ws):
     print("Opened connection")
 
 if __name__ == "__main__":
+    import sys
+
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("ws://staging.smswithoutborders.com:16000",
+    path = "" if len(sys.argv) < 2 else sys.argv[1]
+
+    ws = websocket.WebSocketApp(f"wss://staging.smswithoutborders.com:16000/{path}",
                               on_open=on_open,
                               on_message=on_message,
                               on_error=on_error,

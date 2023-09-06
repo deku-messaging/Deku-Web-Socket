@@ -78,7 +78,7 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("ws://staging.smswithoutborders.com:16000",
+    ws = websocket.WebSocketApp("wss://staging.smswithoutborders.com:16000",
                               on_open=on_open,
                               on_message=on_message,
                               on_error=on_error,
